@@ -1,0 +1,35 @@
+# see https://symfony.com/doc/current/reference/configuration/framework.html
+framework:
+    secret: '%env(APP_SECRET)%'
+    #csrf_protection: true
+    http_method_override: false
+
+    # Enables session support. Note that the session will ONLY be started if you read or write from it.
+    # Remove or comment this section to explicitly disable session support.
+    session:
+        handler_id: null
+        cookie_secure: auto
+        cookie_samesite: lax
+        storage_factory_id: session.storage.factory.native
+
+    #esi: true
+    #fragments: true
+    php_errors:
+        log: true
+
+    http_client:
+        scoped_clients:
+            client.esendex:
+                #base_uri: 'https://connect.esendex.com/richcontent/v3/send'
+                scope: 'https://connect\.esendex\.com/richcontent/v3/'
+                # HTTP Bearer authentication (also called token authentication)
+                #auth_bearer: d6961c77762b4a03bd055ff2732401cf
+                headers:
+                    Content-Type: application/json
+                    Authorization: 'd6961c77762b4a03bd055ff2732401cf'
+
+when@test:
+    framework:
+        test: true
+        session:
+            storage_factory_id: session.storage.factory.mock_file

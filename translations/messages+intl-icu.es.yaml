@@ -1,0 +1,25 @@
+User: Usuario
+Name: Nombre
+Lastname: Apellidos
+Password: Contraseña
+Phonemobile: Teléfono Móvil
+Phonemobilesecondary: Teléfono Móvil Secundario
+Phone: Teléfono
+Date Of Birth: Fecha de Cumpleaños
+Clearpassword: Nueva Contraseña
+Contact Validation Name: Nombre del Contacto de Validación (para confirmar si el usuario sigue vivo)
+Contact Validation Phone: Teléfono del Contacto de Validación
+
+#FrontEnd
+Hello: ¡Hola!
+HelloWithName: ¡Hola {name}!
+#Hello: >-
+#    {name, select,
+#        name   {{name} dds}
+#        other  {df}
+#    }
+View Message!: ¡Ver Mensaje!
+Send SMS: Enviar SMS
+Please insert phone with country prefix: 'Por favor, introduce tu número de teléfono.'
+Prefix: Prefijo
+The phone number seems invalid: El número de teléfono introducido parece incorrecto

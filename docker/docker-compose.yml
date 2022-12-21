@@ -1,0 +1,90 @@
+# tell docker what version of the docker-compose.yml we're using
+version: '3.7'
+
+# define the network
+networks:
+  web-kamikaze-network:
+    ipam:
+      config:
+        - subnet: 182.16.2.0/16
+          ip_range: 182.16.2.0/24
+
+# start the services section
+services:
+  # define the name of our service
+  # corresponds to the "--name" parameter
+  docker-nginx:
+    build:
+      context: ./nginx
+    # defines the port mapping
+    # corresponds to the "-p" flag
+    ports:
+      - "8080:80"
+    tty: true
+    volumes:
+      - ../:/var/www
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - docker-php-fpm
+      - docker-db-kamikaze
+    networks:
+      web-kamikaze-network:
+        ipv4_address: 182.16.2.6
+        aliases:
+          - local.kamikaze.com
+          - test.kamikaze.com
+
+  docker-php-fpm:
+    environment:
+      - DEBUG_PHP_FPM
+      - HOST_IP
+      - DEBUG
+      - REMOTE_HOST=${HOST_IP}
+      - PHP_IDE_CONFIG
+    build:
+      context: ./php-fpm
+      args:
+        - DEBUG=${DEBUG_PHP_FPM}
+        - REMOTE_HOST=${HOST_IP}
+    tty: true
+    volumes:
+      - ../:/var/www
+      - ~/.ssh/id_rsa:/root/.ssh/ecs/id_rsa
+    networks:
+      - web-kamikaze-network
+
+  docker-db-kamikaze:
+    image: mysql:5.7.34
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'kamikaze'
+      # # So you don't have to use root, but you can if you like
+      MYSQL_USER: 'user'
+      # # You can use whatever password you like
+      MYSQL_PASSWORD: 'password'
+      # Password for root access
+      MYSQL_ROOT_PASSWORD: '1234'
+    ports:
+      # <Port exposed> : < MySQL Port running inside container>
+      - '5555:3306'
+    # Where our data will be persisted
+    volumes:
+      - ../app/docker-volume/mysql:/var/lib/mysql
+      - ./db/init:/docker-entrypoint-initdb.d
+    networks:
+      - web-kamikaze-network
+
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    ports:
+      - 7171:80
+    environment:
+      PMA_HOST: docker-db-kamikaze
+      PMA_PORT: 3306
+      PMA_USER: 'user'
+      PMA_PASSWORD: 'password'
+    depends_on:
+      - docker-nginx
+    networks:
+      - web-kamikaze-network
