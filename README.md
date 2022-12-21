@@ -46,4 +46,6 @@ make init
 - Para ejecutarlo ```make phpcs```
 
 ### Otra información:
+- Adicionalmente, se crea una mejora a modo de ejemplo, otro calculador para saber el proyecto con menor beneficio:
+    - URL: http://localhost:8080/calculate-cheaper
 - En el archivo Makefile se insertan varios comandos útiles para el día a día
